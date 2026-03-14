@@ -304,7 +304,7 @@ button, input {
   background: rgba(57, 255, 20, 0.15);
   border: 1px solid rgba(57, 255, 20, 0.35);
   color: var(--color-accent-green);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   white-space: nowrap;

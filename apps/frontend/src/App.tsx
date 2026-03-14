@@ -72,9 +72,9 @@ export default function App() {
                   onChange={setMines}
                 />
                 
-                <div className="bg-[var(--color-bg-secondary)] border border-[var(--glass-border)] rounded-[10px] p-2 flex flex-col items-center justify-center">
-                   <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Potential Payout</span>
-                   <span className="text-[14px] font-bold text-accent-green">
+                <div className="bg-[var(--color-bg-secondary)] border border-[var(--glass-border)] rounded-[10px] py-2 px-3 flex flex-col items-start justify-center">
+                   <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest">Potential Payout</span>
+                   <span className="text-[18px] font-bold text-accent-green">
                      ${isActive ? state.potentialPayout.toFixed(2) : '0.00'}
                    </span>
                 </div>
@@ -92,11 +92,11 @@ export default function App() {
               onReset={reset}
             />
             {isActive && (
-              <div className="text-center bg-[var(--color-bg-secondary)] border border-[rgba(245,185,61,0.3)] rounded-[16px] p-3 shadow-[0_0_20px_rgba(245,185,61,0.15)] relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(245,185,61,0.1)] to-transparent animate-glow-pulse pointer-events-none" />
-                <span className="text-[12px] font-black text-white/80 uppercase tracking-widest block mb-1">Next Multiplier</span>
-                <span className="text-[20px] font-black text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]">
-                   ${nextPayout} <span className="text-[14px] text-white/60 drop-shadow-none">({nextMultiplier}x)</span>
+              <div className="text-left bg-[var(--color-bg-secondary)] border border-[rgba(245,185,61,0.3)] rounded-[16px] py-3 px-4 shadow-[0_0_20px_rgba(245,185,61,0.15)] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[rgba(245,185,61,0.1)] via-[rgba(245,185,61,0.05)] to-transparent animate-glow-pulse pointer-events-none" />
+                <span className="text-[14px] font-black text-white/80 uppercase tracking-widest block mb-1">Next Multiplier</span>
+                <span className="text-[24px] font-black text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]">
+                   ${nextPayout} <span className="text-[16px] text-white/60 drop-shadow-none">({nextMultiplier}x)</span>
                 </span>
               </div>
             )}
