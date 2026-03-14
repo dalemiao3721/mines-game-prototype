@@ -5,6 +5,7 @@ interface GameResultOverlayProps {
   payout: number
   multiplier: number
   betAmount: number
+  onReset: () => void
 }
 
 export function GameResultOverlay({
@@ -12,6 +13,7 @@ export function GameResultOverlay({
   payout,
   multiplier,
   betAmount,
+  onReset,
 }: GameResultOverlayProps) {
   if (status !== 'win' && status !== 'lose') return null
 
@@ -26,14 +28,14 @@ export function GameResultOverlay({
         </div>
 
         {/* Title */}
-        <div
+          <div
           className={`text-3xl font-black tracking-[3px] uppercase ${
             isWin 
               ? 'text-accent-green drop-shadow-[0_0_15px_rgba(57,255,20,0.4)]'
               : 'text-accent-red drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]'
           }`}
         >
-          {isWin ? 'CASHED OUT' : 'BUSTED'}
+          {isWin ? 'CASHED OUT' : 'GAME OVER'}
         </div>
 
         {/* Details */}
@@ -47,13 +49,22 @@ export function GameResultOverlay({
             </div>
           </div>
         ) : (
-          <div className="space-y-1">
-            <div className="text-4xl font-bold font-mono text-accent-red drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-              -$0.00
+          <div className="space-y-4 flex flex-col items-center">
+            <div className="space-y-1">
+              <div className="text-4xl font-bold font-mono text-accent-red drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                -$0.00
+              </div>
+              <div className="text-sm font-bold text-white/50 tracking-wide">
+                Bet of ${betAmount.toFixed(2)} forfeited
+              </div>
             </div>
-            <div className="text-sm font-bold text-white/50 tracking-wide">
-              Bet of ${betAmount.toFixed(2)} forfeited
-            </div>
+            
+            <button
+              onClick={onReset}
+              className="mt-4 px-8 py-3 rounded-[12px] bg-[linear-gradient(135deg,#ff3b5c_0%,#be123c_100%)] text-white font-bold tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,59,92,0.4)]"
+            >
+              Play Again
+            </button>
           </div>
         )}
       </div>

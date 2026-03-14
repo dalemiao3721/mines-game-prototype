@@ -9,7 +9,7 @@ interface TileGridProps {
 
 export function TileGrid({ tiles, disabled, onTileClick }: TileGridProps) {
   return (
-    <div className="grid grid-cols-5 gap-2 sm:gap-3 w-full max-w-[400px] mx-auto">
+    <div className="grid grid-cols-5 gap-2 sm:gap-3 w-full h-full min-h-[300px] max-w-[500px] aspect-square mx-auto content-center">
       {tiles.map((state, index) => (
         <Tile
           key={index}

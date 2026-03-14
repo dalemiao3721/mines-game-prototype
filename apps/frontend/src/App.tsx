@@ -6,7 +6,6 @@ import { PayoutDisplay } from './components/Display/PayoutDisplay'
 import { BetInput } from './components/Controls/BetInput'
 import { MineSelector } from './components/Controls/MineSelector'
 import { ActionButton } from './components/Controls/ActionButton'
-import { SeedVerifier } from './components/FairVerifier/SeedVerifier'
 import { useGameState } from './hooks/useGameState'
 import { useGameAPI } from './hooks/useGameAPI'
 import { calcMultiplier } from './utils/multiplier'
@@ -101,14 +100,6 @@ export default function App() {
               </div>
             )}
           </div>
-          
-          <div className="control-card p-4">
-             <SeedVerifier
-              serverSeedHash={state.serverSeedHash}
-              serverSeed={state.serverSeed}
-              minePositions={state.minePositions}
-            />
-          </div>
         </div>
 
         {/* Center Game Area */}
@@ -139,6 +130,7 @@ export default function App() {
                 payout={state.potentialPayout}
                 multiplier={state.currentMultiplier}
                 betAmount={state.betAmount}
+                onReset={reset}
               />
             </div>
           </div>
