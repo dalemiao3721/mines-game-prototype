@@ -10,7 +10,7 @@ export function MineSelector({ value, disabled, onChange }: MineSelectorProps) {
   return (
     <div className="control-panel__section">
       <span className="control-panel__label">Mines</span>
-      <div className="control-panel__empty-row">
+      <div className="control-panel__select-wrap">
         <select
           className="control-panel__select"
           value={value}
@@ -19,7 +19,7 @@ export function MineSelector({ value, disabled, onChange }: MineSelectorProps) {
         >
           {MINES_OPTIONS.map((count) => (
             <option key={count} value={count}>
-              {count} Mines
+              {count}
             </option>
           ))}
         </select>

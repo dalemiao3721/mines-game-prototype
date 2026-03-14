@@ -12,7 +12,7 @@ export function RTPSelector({ value, disabled, onChange }: RTPSelectorProps) {
   return (
     <div className="control-panel__section">
       <span className="control-panel__label">RTP</span>
-      <div className="control-panel__empty-row">
+      <div className="control-panel__select-wrap">
         <select
           className="control-panel__select"
           value={value}

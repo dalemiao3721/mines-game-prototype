@@ -40,46 +40,56 @@ export default function App() {
       {error && <div className="app__error">{error}</div>}
 
       <div className="app__main">
-        {/* Left Control Panel */}
+        {/* Left Control Panel / Sidebar */}
         <div className="app__left">
-          <div className="control-panel">
-            <div className="control-panel__section">
-              <span className="control-panel__label">Balance</span>
-              <div className="control-panel__balance">
-                <span>$</span>{(1000).toFixed(2) /* TODO: hook up real balance if existing */}
-              </div>
+          
+          {/* Balance Card */}
+          <div className="control-card control-panel__section mb-4">
+            <span className="control-panel__label">Available Balance</span>
+            <div className="control-panel__balance">
+              <span>$</span>{(1000).toFixed(2) /* TODO: hook up real balance */}
             </div>
+          </div>
 
+          {/* Configuration Card */}
+          <div className="control-card flex flex-col gap-6 mb-4">
             <BetInput
               value={state.betAmount}
               disabled={isActive || isGameOver}
               onChange={setBet}
             />
 
-            <MineSelector
-              value={state.mineCount}
-              disabled={isActive || isGameOver}
-              onChange={setMines}
-            />
-
-            <RTPSelector
-              value={state.rtp}
-              disabled={isActive || isGameOver}
-              onChange={setRTP}
-            />
-
-            <div className="mt-2">
-              <ActionButton
-                status={state.status}
-                loading={loading}
-                potentialPayout={state.potentialPayout}
-                onStart={startGame}
-                onCashout={doCashout}
-                onReset={reset}
-              />
+            <div className="control-panel__row">
+              <div className="flex-1">
+                <MineSelector
+                  value={state.mineCount}
+                  disabled={isActive || isGameOver}
+                  onChange={setMines}
+                />
+              </div>
+              <div className="flex-1">
+                <RTPSelector
+                  value={state.rtp}
+                  disabled={isActive || isGameOver}
+                  onChange={setRTP}
+                />
+              </div>
             </div>
-            
-            <SeedVerifier
+          </div>
+
+          <div className="mb-4">
+            <ActionButton
+              status={state.status}
+              loading={loading}
+              potentialPayout={state.potentialPayout}
+              onStart={startGame}
+              onCashout={doCashout}
+              onReset={reset}
+            />
+          </div>
+          
+          <div className="control-card p-4">
+             <SeedVerifier
               serverSeedHash={state.serverSeedHash}
               serverSeed={state.serverSeed}
               minePositions={state.minePositions}
@@ -92,8 +102,8 @@ export default function App() {
           <div className="game-board">
             <div className="game-board__header">
               <div className="game-board__title-area">
-                <h1 className="game-board__title">MINES</h1>
-                <span className="game-board__subtitle">PROVABLY FAIR</span>
+                <h1 className="game-board__title">SUPER MINES</h1>
+                <span className="game-board__subtitle">Provably Fair Game</span>
               </div>
               
               <div className="game-board__status-area">

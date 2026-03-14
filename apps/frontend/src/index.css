@@ -1,59 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  /* Backgrounds */
-  --color-bg-primary: #0a0e1a;
-  --color-bg-secondary: #151a2e;
-  --color-bg-panel: #111827;
+  /* Rich, premium Casino backgrounds */
+  --color-bg-primary: #0a0e17;
+  --color-bg-secondary: #0f1523;
+  --color-bg-panel: rgba(16, 23, 41, 0.6);
 
-  /* Accents */
-  --color-accent-green: #39ff14;
+  /* Super Mines Accents */
+  --color-accent-gold: #f5b93d;
+  --color-accent-green: #3ce884;
+  --color-accent-red: #ff3b5c;
+  --color-accent-teal: #14b8a6;
   --color-accent-purple: #8b5cf6;
-  --color-accent-gold: #fbbf24;
-  --color-accent-red: #ef4444;
 
-  /* Text */
-  --color-text-primary: #ffffff;
+  /* Text Colors */
+  --color-text-primary: #f8fafc;
   --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-text-muted: #475569;
 
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-blur: 12px;
+  /* Premium Glass Settings */
+  --glass-bg: rgba(15, 23, 42, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-hover: rgba(255, 255, 255, 0.12);
+  --glass-blur: 24px;
 
-  /* Borders */
-  --radius-hole: 50%;
-  --radius-card: 16px;
-  --radius-button: 12px;
+  /* Radians & Structural */
+  --radius-card: 20px;
+  --radius-button: 16px;
 
-  /* Animations */
-  --anim-whack-duration: 200ms;
-  --anim-mole-popup: 300ms;
-  --anim-multiplier-bounce: 400ms;
+  /* Gradients */
+  --gradient-title: linear-gradient(135deg, #f5b93d 0%, #ff8c00 50%, #f5b93d 100%);
+  --gradient-btn-start: linear-gradient(135deg, #f5b93d 0%, #d97706 100%);
+  --gradient-btn-cashout: linear-gradient(135deg, #3ce884 0%, #059669 100%);
+  --gradient-btn-over: linear-gradient(135deg, #ff3b5c 0%, #be123c 100%);
 
   /* Shadows */
-  --shadow-glow-green: 0 0 20px rgba(57, 255, 20, 0.4);
-  --shadow-glow-purple: 0 0 15px rgba(139, 92, 246, 0.3);
-  --shadow-glow-gold: 0 0 15px rgba(251, 191, 36, 0.4);
-  --shadow-glow-red: 0 0 20px rgba(239, 68, 68, 0.4);
-
-  /* Title gradient */
-  --gradient-title: linear-gradient(135deg, #39ff14 0%, #7cfc00 25%, #fbbf24 50%, #f59e0b 75%, #fbbf24 100%);
-
-  /* Neon glows */
-  --glow-title: 0 0 20px rgba(57, 255, 20, 0.4), 0 0 40px rgba(57, 255, 20, 0.2), 0 0 80px rgba(251, 191, 36, 0.15);
-  --glow-red-strong: 0 0 40px rgba(239, 68, 68, 0.8), 0 0 80px rgba(239, 68, 68, 0.4), 0 0 120px rgba(239, 68, 68, 0.2);
-  --glow-green-strong: 0 0 30px rgba(57, 255, 20, 0.6), 0 0 60px rgba(57, 255, 20, 0.3);
+  --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  --glow-gold: 0 0 15px rgba(245, 185, 61, 0.4);
+  --glow-green: 0 0 20px rgba(60, 232, 132, 0.4);
+  --glow-red: 0 0 20px rgba(255, 59, 92, 0.4);
 }
 
 @theme {
   --color-accent-gold: var(--color-accent-gold);
   --color-accent-green: var(--color-accent-green);
   --color-accent-red: var(--color-accent-red);
-  --color-accent-purple: var(--color-accent-purple);
-  --color-glass-border: var(--glass-border);
+  --color-accent-teal: var(--color-accent-teal);
   --color-bg-panel: var(--color-bg-panel);
+  --color-glass-border: var(--glass-border);
 }
 
 *, *::before, *::after {
@@ -71,6 +65,10 @@ html {
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--color-bg-primary);
+  /* Premium Mesh Gradient Background */
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(20, 184, 166, 0.08), transparent 25%), 
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1), transparent 25%);
   color: var(--color-text-primary);
   min-height: 100vh;
   overflow-x: hidden;
@@ -114,13 +112,17 @@ button, input {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 32px;
-  padding: 24px;
+  gap: 40px;
+  padding: 32px;
   position: relative;
 }
 
 .app__left {
   flex-shrink: 0;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .app__center {
@@ -153,68 +155,61 @@ button, input {
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Control Panel */
-.control-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  width: 250px;
-  padding: 18px;
+/* Control Panel Component Card Backgrounds */
+.control-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-card);
+  padding: 20px;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow-premium);
 }
 
 .control-panel__section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .control-panel__label {
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   color: var(--color-text-secondary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
 .control-panel__balance {
-  font-size: 1.3rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 900;
   color: var(--color-text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
 }
 
 .control-panel__balance span {
-  color: var(--color-accent-green);
+  font-size: 1.2rem;
+  color: var(--color-accent-teal);
 }
 
-.control-panel__points {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--color-accent-gold);
-  text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
-}
-
-.control-panel__points span {
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  letter-spacing: 1px;
+/* Sub Layout rows */
+.control-panel__row {
+  display: flex;
+  gap: 12px;
 }
 
 .control-panel__bet-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .control-panel__bet-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
   font-size: 1.1rem;
@@ -223,11 +218,12 @@ button, input {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--glass-border);
-  transition: background 0.15s;
+  transition: all 0.2s;
 }
 
 .control-panel__bet-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--glass-hover);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .control-panel__bet-input-wrap {
@@ -239,69 +235,76 @@ button, input {
 
 .control-panel__bet-prefix {
   position: absolute;
-  left: 8px;
-  color: var(--color-accent-green);
+  left: 12px;
+  color: var(--color-accent-teal);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1rem;
   pointer-events: none;
 }
 
 .control-panel__bet-input {
   flex: 1;
-  height: 30px;
-  border-radius: 8px;
+  height: 36px;
+  border-radius: 10px;
   background: var(--color-bg-secondary);
-  color: var(--color-accent-green);
-  font-size: 0.95rem;
+  color: var(--color-accent-teal);
+  font-size: 1rem;
   font-weight: 700;
-  text-align: center;
+  text-align: right;
   border: 1px solid var(--glass-border);
   width: 100%;
-  min-width: 0;
-  padding-left: 20px;
+  padding-left: 24px;
+  padding-right: 12px;
+  transition: all 0.2s;
 }
 
 .control-panel__bet-input:focus {
-  border-color: var(--color-accent-green);
-  box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
+  border-color: var(--color-accent-teal);
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.2);
 }
 
 /* Base Select Style used for Mines/RTP */
-.control-panel__select {
+.control-panel__select-wrap {
+  position: relative;
   flex: 1;
-  height: 30px;
-  border-radius: 8px;
+}
+
+.control-panel__select {
+  width: 100%;
+  height: 36px;
+  border-radius: 10px;
   background: var(--color-bg-secondary);
   color: var(--color-accent-gold);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  text-align: center;
+  padding: 0 12px;
   border: 1px solid var(--glass-border);
-  padding: 0 8px;
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
-  width: 100%;
+  transition: all 0.2s;
 }
 
 .control-panel__select:focus {
   border-color: var(--color-accent-gold);
+  box-shadow: 0 0 12px rgba(245, 185, 61, 0.2);
 }
 
 /* Action Button */
 .control-panel__action-btn {
   width: 100%;
-  padding: 12px;
+  padding: 16px;
   border-radius: var(--radius-button);
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
 }
 
 .control-panel__action-btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
 }
 
 .control-panel__action-btn:active {
@@ -309,24 +312,21 @@ button, input {
 }
 
 .control-panel__action-btn--start {
-  background: var(--color-accent-green);
+  background: var(--gradient-btn-start);
   color: #000;
-  box-shadow: var(--shadow-glow-green);
-}
-.control-panel__action-btn--start:hover {
-  box-shadow: 0 0 30px rgba(57, 255, 20, 0.6);
+  box-shadow: var(--glow-gold);
 }
 
 .control-panel__action-btn--cashout {
-  background: var(--color-accent-green);
+  background: var(--gradient-btn-cashout);
   color: #000;
-  box-shadow: var(--shadow-glow-green);
+  box-shadow: var(--glow-green);
 }
 
 .control-panel__action-btn--gameover {
-  background: var(--color-accent-red);
+  background: var(--gradient-btn-over);
   color: #fff;
-  box-shadow: var(--shadow-glow-red);
+  box-shadow: var(--glow-red);
 }
 
 .control-panel__action-btn:disabled {
@@ -334,6 +334,7 @@ button, input {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  filter: none;
 }
 
 /* GameBoard */
@@ -341,44 +342,50 @@ button, input {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   width: 100%;
   max-width: 520px;
 }
 
 .game-board__header {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   width: 100%;
   gap: 16px;
+  background: var(--glass-bg);
+  padding: 16px 24px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-premium);
 }
 
 .game-board__title-area {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .game-board__title {
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   background: var(--gradient-title);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-transform: uppercase;
-  filter: drop-shadow(0 0 20px rgba(57, 255, 20, 0.3)) drop-shadow(0 0 40px rgba(251, 191, 36, 0.15));
-  line-height: 1.1;
+  filter: drop-shadow(0 0 20px rgba(245, 185, 61, 0.4));
+  line-height: 1;
   white-space: nowrap;
 }
 
 .game-board__subtitle {
-  color: var(--color-text-secondary);
-  font-size: 0.75rem;
-  letter-spacing: 1.5px;
-  font-weight: 500;
+  color: var(--color-accent-teal);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .game-board__status-area {
@@ -397,15 +404,15 @@ button, input {
 }
 
 @keyframes tile-safe-glow {
-  0% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.4); }
-  70% { box-shadow: 0 0 20px 10px rgba(57, 255, 20, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(60, 232, 132, 0.4); }
+  70% { box-shadow: 0 0 20px 10px rgba(60, 232, 132, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(60, 232, 132, 0); }
 }
 
 @keyframes tile-mine-shake {
   0%, 100% { transform: translateX(0); }
-  10%, 50%, 90% { transform: translateX(-4px); }
-  30%, 70% { transform: translateX(4px); }
+  10%, 50%, 90% { transform: translateX(-6px); }
+  30%, 70% { transform: translateX(6px); }
 }
 
 @keyframes multiplier-pulse {
@@ -414,21 +421,21 @@ button, input {
 }
 
 @keyframes result-fade-in {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
 }
 
 .animate-tile-flip { animation: tile-flip 0.4s ease-in-out; }
 .animate-tile-safe { animation: tile-safe-glow 0.6s ease-out; }
 .animate-tile-mine { animation: tile-mine-shake 0.5s ease-in-out; }
 .animate-multiplier-pulse { animation: multiplier-pulse 0.3s ease-in-out; }
-.animate-result-in { animation: result-fade-in 0.4s ease-out; }
-.animate-glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
+.animate-result-in { animation: result-fade-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
 
 .glass-card {
   background: var(--glass-bg);
@@ -436,4 +443,5 @@ button, input {
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-card);
+  box-shadow: var(--shadow-premium);
 }
