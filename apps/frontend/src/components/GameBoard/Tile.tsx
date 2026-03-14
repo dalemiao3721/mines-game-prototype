@@ -27,7 +27,7 @@ export function Tile({ index, state, disabled, onClick }: TileProps) {
 
   const stateClasses: Record<TileState, string> = {
     unrevealed:
-      'bg-bg-panel border-[2px] border-glass-border hover:bg-[rgba(255,255,255,0.08)] hover:border-accent-purple/50 shadow-[inset_0_4px_12px_rgba(0,0,0,0.5)] active:scale-95 active:shadow-[inset_0_8px_20px_rgba(0,0,0,0.6)]',
+      'border border-t-[rgba(255,255,255,0.1)] border-l-[rgba(255,255,255,0.05)] border-r-[rgba(0,0,0,0.4)] border-b-[rgba(0,0,0,0.6)] hover:brightness-110 active:scale-95 active:shadow-[inset_2px_4px_8px_rgba(0,0,0,0.8)] shadow-[6px_6px_12px_rgba(0,0,0,0.4),-4px_-4px_10px_rgba(255,255,255,0.02),inset_1px_1px_2px_rgba(255,255,255,0.05)] bg-[linear-gradient(145deg,var(--color-bg-secondary),#171f34)]',
     safe:
       'bg-accent-green/10 border-[2px] border-accent-green/50 shadow-[0_0_20px_rgba(57,255,20,0.2),inset_0_4px_12px_rgba(0,0,0,0.5)]',
     mine:

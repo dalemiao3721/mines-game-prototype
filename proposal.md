@@ -1,8 +1,8 @@
-# 踩地雷機率遊戲 (Mines Game) - 專案提案書 (Proposal)
+# Super Mines (超級踩地雷) - 專案提案書 (Proposal)
 
 ## 1. 專案背景與目標
-本專案旨在使用現代化的前後端技術（Vite + React & Node.js），開發一款類似 Stake Mines 的加密貨幣風格「踩地雷」機率遊戲。
-此遊戲的特色為**高透明度 (Provably Fair)** 與 **彈性的回報率設定 (Configurable RTP)**，確保營運方與玩家之間建立信任，同時提供極致的遊玩體驗。
+本專案旨在使用現代化的前後端技術（Vite + React & Node.js），開發一款極致高質感 (Premium Casino) 加密貨幣風格「踩地雷」機率遊戲。
+此遊戲的特色為**高透明度 (Provably Fair)**，確保營運方與玩家之間建立信任，同時提供極致的遊玩體驗。
 
 ## 2. 遊戲核心規則
 - **網格範圍**：5x5 網格（共 25 個格子）。
@@ -13,9 +13,9 @@
   2. **完全過關 (Full Clear)**：若玩家成功揭開所有非地雷格子，系統將自動以最終最高倍數進行結算。
   3. **踩中地雷 (Hit a Mine)**：遊戲立即結束，**下注金額全數沒收**，獎金歸零。
 
-## 3. 數學模型與可調整機率模組 (RTP)
-本專案的一大亮點為支援**五段式設定的機率模組**。
-系統將從設定檔讀取全域 RTP (Return to Player) 參數，確保精準控制莊家優勢 (House Edge)。
+## 3. 數學模型與機率模組 (RTP)
+本專案系統後端內建**五段式設定的機率模組**。
+系統將從設定檔讀取全域 RTP (Return to Player) 參數，確保精準控制莊家優勢 (House Edge)。 (前端介面預設隱藏此設定)
 
 - **支援的 RTP 設定值**：`94%`, `96%`, `97%`, `98%`, `99%`。
 
@@ -69,8 +69,8 @@
 ```mermaid
 graph TB
     subgraph Client["\ud83d\udda5\ufe0f  前端 (Browser / Vite + React + TS)"]
-        UI["遊戲 UI\n5x5 網格 + 控制區"]
-        State["狀態管理\n(當前倍率 / 回合狀態)"]
+        UI["遊戲 UI\n5x5 網格 + 獨立玻璃卡片控制區"]
+        State["狀態管理\n(當前倍率 / 下局獎金 / 回合狀態)"]
         FairVerify["Provably Fair 驗算工具\n(玩家自行驗證 Seed)"]
     end
 

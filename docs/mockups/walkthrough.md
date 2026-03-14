@@ -3,14 +3,14 @@
 本文件展示了踩地雷遊戲 (Mines) 的 4 個關鍵 UI 狀態原型。所有設計採用 **Premium Casino / Dark Mode / Glassmorphism** 風格。
 
 ## 1. 遊戲啟動畫面 (Start Screen)
-玩家設置下注與地雷數量的初始畫面。左側控制面板含餘額、下注金額、地雷數與 RTP 選擇器。中央為 5x5 遊戲網格。
+玩家設置下注與地雷數量的初始畫面。左側控制面板含餘額、+-按鈕下注金額、地雷數，並將潛在獲利 (Potential Payout) 置於地雷設定下方。中央為 5x5 的 3D 立體質感遊戲網格。
 
 ![Start Screen](start_screen.png)
 
 ---
 
 ## 2. 遊戲進行中 - 安全翻開 (Tile Safe)
-展示成功翻開安全格子後的狀態。安全的格子顯示鑽石與綠色光輝，右上角即時更新「Multiplier」倍率與「Potential Payout」。
+展示成功翻開安全格子後的狀態。安全的格子顯示鑽石與綠色光輝，左側下方即時更新包含精確金額的「Next Multiplier」倍率提示。
 
 ![Playing Screen](playing_screen.png)
 

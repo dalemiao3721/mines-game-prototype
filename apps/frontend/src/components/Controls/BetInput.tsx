@@ -5,8 +5,8 @@ interface BetInputProps {
 }
 
 export function BetInput({ value, disabled, onChange }: BetInputProps) {
-  const handleHalf = () => onChange(Math.max(1, Math.floor(value / 2)))
-  const handleDouble = () => onChange(value * 2)
+  const handleDecrement = () => onChange(Math.max(1, value - 1))
+  const handleIncrement = () => onChange(value + 1)
 
   return (
     <div className="control-panel__section">
@@ -14,10 +14,10 @@ export function BetInput({ value, disabled, onChange }: BetInputProps) {
       <div className="control-panel__bet-row">
         <button
           className="control-panel__bet-btn"
-          onClick={handleHalf}
-          disabled={disabled}
+          onClick={handleDecrement}
+          disabled={disabled || value <= 1}
         >
-          ½
+          -
         </button>
         <div className="control-panel__bet-input-wrap">
           <span className="control-panel__bet-prefix">$</span>
@@ -33,10 +33,10 @@ export function BetInput({ value, disabled, onChange }: BetInputProps) {
         </div>
         <button
           className="control-panel__bet-btn"
-          onClick={handleDouble}
+          onClick={handleIncrement}
           disabled={disabled}
         >
-          2×
+          +
         </button>
       </div>
     </div>

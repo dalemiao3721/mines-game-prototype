@@ -39,6 +39,11 @@
   --glow-gold: 0 0 15px rgba(245, 185, 61, 0.4);
   --glow-green: 0 0 20px rgba(60, 232, 132, 0.4);
   --glow-red: 0 0 20px rgba(255, 59, 92, 0.4);
+  
+  /* 3D Tile Constants */
+  --tile-bg: linear-gradient(145deg, var(--color-bg-secondary), #171f34);
+  --tile-shadow: 6px 6px 12px rgba(0,0,0,0.6), -4px -4px 10px rgba(255,255,255,0.03), inset 1px 1px 2px rgba(255,255,255,0.05);
+  --tile-bg-hover: linear-gradient(145deg, #171f34, var(--color-bg-secondary));
 }
 
 @theme {
@@ -110,16 +115,16 @@ button, input {
 .app__main {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* align height start */
   justify-content: center;
-  gap: 40px;
+  gap: 24px; /* Reduced gap */
   padding: 32px;
   position: relative;
 }
 
 .app__left {
   flex-shrink: 0;
-  width: 320px;
+  width: 300px; /* narrowed to optimized width */
   display: flex;
   flex-direction: column;
   gap: 16px;

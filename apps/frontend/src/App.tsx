@@ -5,11 +5,11 @@ import { MultiplierDisplay } from './components/Display/MultiplierDisplay'
 import { PayoutDisplay } from './components/Display/PayoutDisplay'
 import { BetInput } from './components/Controls/BetInput'
 import { MineSelector } from './components/Controls/MineSelector'
-import { RTPSelector } from './components/Controls/RTPSelector'
 import { ActionButton } from './components/Controls/ActionButton'
 import { SeedVerifier } from './components/FairVerifier/SeedVerifier'
 import { useGameState } from './hooks/useGameState'
 import { useGameAPI } from './hooks/useGameAPI'
+import { calcMultiplier } from './utils/multiplier'
 
 export default function App() {
   const {
@@ -30,6 +30,12 @@ export default function App() {
   )
 
   const { loading, error, startGame, pickTile, doCashout } = useGameAPI(state, actions)
+
+  // Extract logic for next payout calculation
+  const safeOpened = state.tiles.filter((t) => t === 'safe').length
+  const nextMultiplier = calcMultiplier(state.mineCount, safeOpened + 1, state.rtp)
+  const nextPayoutRaw = state.betAmount * nextMultiplier
+  const nextPayout = nextPayoutRaw.toFixed(2)
 
   const isActive = state.status === 'active'
   const isGameOver = state.status === 'win' || state.status === 'lose'
@@ -60,24 +66,24 @@ export default function App() {
             />
 
             <div className="control-panel__row">
-              <div className="flex-1">
+              <div className="flex-1 space-y-2">
                 <MineSelector
                   value={state.mineCount}
                   disabled={isActive || isGameOver}
                   onChange={setMines}
                 />
-              </div>
-              <div className="flex-1">
-                <RTPSelector
-                  value={state.rtp}
-                  disabled={isActive || isGameOver}
-                  onChange={setRTP}
-                />
+                
+                <div className="bg-[var(--color-bg-secondary)] border border-[var(--glass-border)] rounded-[10px] p-2 flex flex-col items-center justify-center">
+                   <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Potential Payout</span>
+                   <span className="text-[14px] font-bold text-accent-green">
+                     ${isActive ? state.potentialPayout.toFixed(2) : '0.00'}
+                   </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mb-4">
+          <div className="flex flex-col gap-2 mb-4">
             <ActionButton
               status={state.status}
               loading={loading}
@@ -86,6 +92,14 @@ export default function App() {
               onCashout={doCashout}
               onReset={reset}
             />
+            {isActive && (
+              <div className="text-center bg-[var(--color-bg-secondary)] border border-[var(--glass-border)] rounded-[16px] py-2 px-4 shadow-[var(--shadow-premium)]">
+                <span className="text-[11px] font-bold text-white/60 uppercase tracking-wider block mb-1">Next Multiplier</span>
+                <span className="text-[16px] font-bold text-accent-gold">
+                   ${nextPayout} <span className="text-[12px] text-white/40">({nextMultiplier}x)</span>
+                </span>
+              </div>
+            )}
           </div>
           
           <div className="control-card p-4">
@@ -109,11 +123,6 @@ export default function App() {
               <div className="game-board__status-area">
                 <MultiplierDisplay
                   multiplier={state.currentMultiplier}
-                  isActive={isActive}
-                />
-                <PayoutDisplay
-                  betAmount={state.betAmount}
-                  payout={state.potentialPayout}
                   isActive={isActive}
                 />
               </div>
