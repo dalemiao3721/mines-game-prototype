@@ -271,13 +271,14 @@ button, input {
 }
 
 /* Base Select Style used for Mines/RTP */
-.control-panel__select-wrap {
-  position: relative;
-  flex: 1;
+.control-panel__empty-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .control-panel__select {
-  width: 100%;
+  flex: 1;
   height: 36px;
   border-radius: 10px;
   background: var(--color-bg-secondary);
@@ -295,6 +296,18 @@ button, input {
 .control-panel__select:focus {
   border-color: var(--color-accent-gold);
   box-shadow: 0 0 12px rgba(245, 185, 61, 0.2);
+}
+
+.control-panel__active-badge {
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(57, 255, 20, 0.15);
+  border: 1px solid rgba(57, 255, 20, 0.35);
+  color: var(--color-accent-green);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 /* Action Button */
