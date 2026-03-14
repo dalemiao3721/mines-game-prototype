@@ -20,7 +20,7 @@ export function GameResultOverlay({
   const isWin = status === 'win'
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl animate-result-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-none animate-result-in">
       <div className="text-center space-y-6 p-10 glass-card border-glass-border min-w-[320px]">
         {/* Icon */}
         <div className="text-6xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
