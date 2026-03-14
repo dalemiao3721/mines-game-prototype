@@ -54,7 +54,7 @@ export function GameResultOverlay({
               onClick={onReset}
               className="control-panel__action-btn control-panel__action-btn--start mt-4 px-12 py-3 w-auto min-w-[200px]"
             >
-              PLAY AGAIN
+              START GAME
             </button>
           </div>
         ) : (
@@ -72,7 +72,7 @@ export function GameResultOverlay({
               onClick={onReset}
               className="control-panel__action-btn control-panel__action-btn--start mt-4 px-12 py-3 w-auto min-w-[200px]"
             >
-              PLAY AGAIN
+              START GAME
             </button>
           </div>
         )}

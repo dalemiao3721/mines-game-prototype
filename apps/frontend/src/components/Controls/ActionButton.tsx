@@ -21,9 +21,9 @@ export function ActionButton({
     return (
       <button
         onClick={onReset}
-        className="control-panel__action-btn control-panel__action-btn--play-again"
+        className="control-panel__action-btn control-panel__action-btn--start"
       >
-        PLAY AGAIN
+        START GAME
       </button>
     )
   }
@@ -41,7 +41,7 @@ export function ActionButton({
             CASHING OUT...
           </span>
         ) : (
-          `WITHDRAW $${potentialPayout.toFixed(2)}`
+          `CASHOUT $${potentialPayout.toFixed(2)}`
         )}
       </button>
     )
