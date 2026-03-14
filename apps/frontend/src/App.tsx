@@ -92,10 +92,11 @@ export default function App() {
               onReset={reset}
             />
             {isActive && (
-              <div className="text-center bg-[var(--color-bg-secondary)] border border-[var(--glass-border)] rounded-[16px] py-2 px-4 shadow-[var(--shadow-premium)]">
-                <span className="text-[11px] font-bold text-white/60 uppercase tracking-wider block mb-1">Next Multiplier</span>
-                <span className="text-[16px] font-bold text-accent-gold">
-                   ${nextPayout} <span className="text-[12px] text-white/40">({nextMultiplier}x)</span>
+              <div className="text-center bg-[var(--color-bg-secondary)] border border-[rgba(245,185,61,0.3)] rounded-[16px] p-3 shadow-[0_0_20px_rgba(245,185,61,0.15)] relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(245,185,61,0.1)] to-transparent animate-glow-pulse pointer-events-none" />
+                <span className="text-[12px] font-black text-white/80 uppercase tracking-widest block mb-1">Next Multiplier</span>
+                <span className="text-[20px] font-black text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]">
+                   ${nextPayout} <span className="text-[14px] text-white/60 drop-shadow-none">({nextMultiplier}x)</span>
                 </span>
               </div>
             )}
@@ -108,7 +109,7 @@ export default function App() {
             <div className="game-board__header">
               <div className="game-board__title-area">
                 <h1 className="game-board__title">SUPER MINES</h1>
-                <span className="game-board__subtitle">Provably Fair Game</span>
+                <span className="game-board__subtitle">FIND THE GEMS, AVOID THE BOMBS!</span>
               </div>
               
               <div className="game-board__status-area">
