@@ -40,13 +40,22 @@ export function GameResultOverlay({
 
         {/* Details */}
         {isWin ? (
-          <div className="space-y-1">
-            <div className="text-4xl font-bold font-mono text-accent-gold drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
-              +${payout.toFixed(2)}
+          <div className="space-y-4 flex flex-col items-center">
+            <div className="space-y-1">
+              <div className="text-4xl font-bold font-mono text-accent-gold drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
+                +${payout.toFixed(2)}
+              </div>
+              <div className="text-sm font-bold text-white/50 tracking-wide">
+                ${betAmount.toFixed(2)} × {multiplier.toFixed(2)}
+              </div>
             </div>
-            <div className="text-sm font-bold text-white/50 tracking-wide">
-              ${betAmount.toFixed(2)} × {multiplier.toFixed(2)}
-            </div>
+            
+            <button
+              onClick={onReset}
+              className="control-panel__action-btn control-panel__action-btn--start mt-4 px-12 py-3 w-auto min-w-[200px]"
+            >
+              PLAY AGAIN
+            </button>
           </div>
         ) : (
           <div className="space-y-4 flex flex-col items-center">
@@ -61,9 +70,9 @@ export function GameResultOverlay({
             
             <button
               onClick={onReset}
-              className="mt-4 px-8 py-3 rounded-[12px] bg-[linear-gradient(135deg,#ff3b5c_0%,#be123c_100%)] text-white font-bold tracking-widest uppercase hover:brightness-110 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,59,92,0.4)]"
+              className="control-panel__action-btn control-panel__action-btn--start mt-4 px-12 py-3 w-auto min-w-[200px]"
             >
-              Play Again
+              PLAY AGAIN
             </button>
           </div>
         )}
