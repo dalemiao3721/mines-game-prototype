@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BetRecord {
+  betId             String      @id @default(cuid()) @map("bet_id")
+  sessionId         String      @unique @map("session_id")
+  playerId          String      @map("player_id")
+  betAmount         Decimal     @map("bet_amount")
+  mineCount         Int         @map("mine_count")
+  rtpSetting        Int         @map("rtp_setting")
+  status            BetStatus   @default(ACTIVE)
+  pickedTiles       Int[]       @map("picked_tiles")
+  currentMultiplier Decimal     @default(1.0) @map("current_multiplier")
+  serverSeedHash    String      @map("server_seed_hash")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+  settlement        Settlement?
+  drawLog           DrawLog?
+
+  @@map("bet_records")
+}
+
+model Settlement {
+  settlementId    String    @id @default(cuid()) @map("settlement_id")
+  betId           String    @unique @map("bet_id")
+  betRecord       BetRecord @relation(fields: [betId], references: [betId])
+  outcome         Outcome
+  betAmount       Decimal   @map("bet_amount")
+  finalMultiplier Decimal   @map("final_multiplier")
+  payout          Decimal
+  profit          Decimal
+  settledAt       DateTime  @default(now()) @map("settled_at")
+
+  @@map("settlements")
+}
+
+model DrawLog {
+  drawId         String    @id @default(cuid()) @map("draw_id")
+  betId          String    @unique @map("bet_id")
+  betRecord      BetRecord @relation(fields: [betId], references: [betId])
+  serverSeed     String    @map("server_seed")
+  serverSeedHash String    @map("server_seed_hash")
+  clientSeed     String?   @map("client_seed")
+  minePositions  Int[]     @map("mine_positions")
+  totalTiles     Int       @default(25) @map("total_tiles")
+  mineCount      Int       @map("mine_count")
+  revealedAt     DateTime  @default(now()) @map("revealed_at")
+
+  @@map("draw_logs")
+}
+
+enum BetStatus {
+  ACTIVE
+  SETTLED
+}
+
+enum Outcome {
+  WIN
+  LOSE
+}
