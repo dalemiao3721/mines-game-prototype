@@ -60,16 +60,20 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
         actions.tileSafe(tileIndex, res.newMultiplier, nextMult)
         if ('fullClear' in res && res.fullClear) {
           audioManager.play('cashout')
+          audioManager.play('cashRegister')
           actions.cashout(res.serverSeed, res.minePositions, res.payout, res.newMultiplier)
           if ('newBalance' in res && res.newBalance != null && lobby?.onBalanceUpdate) {
             lobby.onBalanceUpdate(res.newBalance)
           }
         }
       } else {
-        // Trigger cinematic sequence: bump -> delay -> bomb -> explosion
+        // Trigger cinematic Double-Boom sequence: 
+        // 1. Initial Blast (Bump)
         audioManager.play('bump')
-        setTimeout(() => audioManager.play('bomb'), 1200) // 1.2s suspense
-        setTimeout(() => audioManager.play('explosion'), 1800) // 0.6s after bomb
+        // 2. Rising Suspense (Bomb Fuse)
+        setTimeout(() => audioManager.play('bomb'), 1200)
+        // 3. Final Massive Shockwave (Explosion)
+        setTimeout(() => audioManager.play('explosion'), 2000)
         
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
         if (res.newBalance != null && lobby?.onBalanceUpdate) {
@@ -89,8 +93,9 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     setError(null)
     try {
       const res = await gameApi.cashout({ sessionId: state.sessionId })
-      // Trigger Cashout Sound
+      // Trigger Rich Cashout Sequence
       audioManager.play('cashout')
+      audioManager.play('cashRegister')
       actions.cashout(res.serverSeed, res.minePositions, res.payout, res.finalMultiplier)
       if (res.newBalance != null && lobby?.onBalanceUpdate) {
         lobby.onBalanceUpdate(res.newBalance)
