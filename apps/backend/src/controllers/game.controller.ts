@@ -12,8 +12,8 @@ export async function handleStartGame(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const { betAmount, mineCount, rtp } = req.body as StartGameRequest
-    const result = await startGame(betAmount, mineCount, rtp)
+    const { betAmount, mineCount, rtp, lobbyToken, lobbySessionId } = req.body as StartGameRequest
+    const result = await startGame(betAmount, mineCount, rtp, lobbyToken, lobbySessionId)
     res.json(result)
   } catch (err) {
     next(err)

@@ -23,6 +23,8 @@ model BetRecord {
   settlement        Settlement?
   drawLog           DrawLog?
 
+  @@index([playerId, status])
+  @@index([playerId, createdAt])
   @@map("bet_records")
 }
 

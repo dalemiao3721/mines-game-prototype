@@ -10,7 +10,7 @@ import {
   validateCashout,
 } from '../middleware/validate'
 
-const router = Router()
+const router: ReturnType<typeof Router> = Router()
 
 router.post('/start', validateStartGame, handleStartGame)
 router.post('/pick', validatePickTile, handlePickTile)

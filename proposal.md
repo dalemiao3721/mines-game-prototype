@@ -2,7 +2,7 @@
 
 ## 1. 專案背景與目標
 本專案旨在使用現代化的前後端技術（Vite + React & Node.js），開發一款極致高質感 (Premium Casino) 加密貨幣風格「踩地雷」機率遊戲。
-此遊戲的特色為**高透明度 (Provably Fair)**，確保營運方與玩家之間建立信任，同時提供極致的遊玩體驗。
+此遊戲的特色為**高透明度 (Provably Fair)**，並支援**單一網址整合 (http://localhost:3001/mine-game/)** 與 **行動端 PWA (/m/)**。
 
 ## 2. 遊戲核心規則
 - **網格範圍**：5x5 網格（共 25 個格子）。
@@ -16,6 +16,8 @@
 ## 3. 數學模型與機率模組 (RTP)
 本專案系統後端內建**五段式設定的機率模組**。
 系統將從設定檔讀取全域 RTP (Return to Player) 參數，確保精準控制莊家優勢 (House Edge)。 (前端介面預設隱藏此設定)
+
+> **隱藏功能**：Provably Fair 驗算工具（SeedVerifier）已在前端隱藏，與 RTP Selector 採用相同處理方式（後端仍完整支援）。
 
 - **支援的 RTP 設定值**：`94%`, `96%`, `97%`, `98%`, `99%`。
 
@@ -38,6 +40,10 @@
 - **核心技術**：Vite + React + TypeScript
 - **樣式與 UI**：TailwindCSS (用於快速建構響應式、玻璃擬物化 Glassmorphism 等 Premium UI 設計)。
 - **職責**：5x5 遊戲網格渲染、難度切換、處理與後端的 WebSocket/HTTP API 通訊、動畫過場。
+- **整合規格**：
+  - **Base URL**：`/mine-game/`
+  - **Mobile Route**：`/mine-game/m/` (強制載入 Mobile Pro UI)
+  - **PWA**：支援 Manifest 定義與 Service Worker 緩存。
 
 ### 4.2 後端 (Backend)
 負責處理機率、結算邏輯與公平性驗證（不信任任何前端帶來的遊戲狀態資料）。
@@ -71,7 +77,7 @@ graph TB
     subgraph Client["\ud83d\udda5\ufe0f  前端 (Browser / Vite + React + TS)"]
         UI["遊戲 UI\n5x5 網格 + 獨立玻璃卡片控制區"]
         State["狀態管理\n(當前倍率 / 下局獎金 / 回合狀態)"]
-        FairVerify["Provably Fair 驗算工具\n(玩家自行驗證 Seed)"]
+        FairVerify["Provably Fair 驗算工具\n(玩家自行驗證 Seed)\n⚠️ SeedVerifier 已在前端隱藏"]
     end
 
     subgraph Backend["\u2699\ufe0f  後端 (Node.js + Express + TS)"]
@@ -224,3 +230,34 @@ sequenceDiagram
 | 8 | 8.586x | 8.500x | 8.414x | 8.328x | 8.242x | 8.071x |
 | 9 | 12.163x | 12.042x | 11.920x | 11.798x | 11.677x | 11.434x |
 | 10 | 17.692x | 17.515x | 17.338x | 17.161x | 16.984x | 16.630x |
+
+---
+
+## 9. v1.3 更新紀錄 (2026-03-16)
+
+### 前端修正
+1. **BetInput 步進值**：加減按鈕步進值改為 10。
+2. **初始下注金額**：預設值改為 $100。
+3. **Provably Fair (SeedVerifier)**：前端已隱藏，與 RTP Selector 採用相同處理方式（後端仍完整支援）。
+4. **手機版佈局**：上下堆疊（遊戲板在上、控制面板在下），`@media (max-width: 768px)` 響應式切換。
+5. **手機版 TileGrid**：移除 `aspect-square`，使用 `calc(100dvh - 440px)` 限制高度。
+6. **手機版間距壓縮**：gap: 0, padding: 0 6px, control-card padding: 5px 10px。
+7. **`.app__main` 手機版**：`flex: none` 消除空白。
+8. **GameResultOverlay**：炸彈顯示 "$0.00" payout + "-$betAmount lost"。
+9. **ActionButton**：遊戲結束後顯示 "PLAY AGAIN"。
+
+### 後端修正
+1. **DATABASE_URL**：使用獨立 `mines_game` 資料庫。
+
+### PWA 通用修正
+1. Viewport meta：`width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover`。
+2. 全域 CSS：`100vh` → `100dvh`，`-webkit-text-size-adjust: 100%`。
+3. 手機版響應式斷點：`@media (max-width: 768px)`。
+
+### Mockup 截圖
+- 桌面版：`apps/mines-game/docs/mockups/desktop/mines_idle.png`
+- 手機版：`apps/mines-game/docs/mockups/mobile/mines_idle_mobile.png`
+
+---
+
+*文件版本：v1.3 | 日期：2026-03-16*

@@ -5,12 +5,16 @@ export interface StartGameRequest {
   betAmount: number
   mineCount: number
   rtp: RTPSetting
+  lobbyToken?: string
+  lobbySessionId?: string
 }
 
 export interface StartGameResponse {
   sessionId: string
   serverSeedHash: string
   multiplier: number
+  nextMultiplier: number
+  lobbyBalance?: number
 }
 
 // POST /api/game/pick
@@ -22,7 +26,19 @@ export interface PickTileRequest {
 export interface PickTileSafeResponse {
   result: 'safe'
   newMultiplier: number
+  nextMultiplier: number
   pickedTiles: number[]
+}
+
+export interface PickTileFullClearResponse {
+  result: 'safe'
+  newMultiplier: number
+  pickedTiles: number[]
+  fullClear: true
+  payout: number
+  serverSeed: string
+  minePositions: number[]
+  newBalance?: number
 }
 
 export interface PickTileMineResponse {
@@ -30,9 +46,10 @@ export interface PickTileMineResponse {
   serverSeed: string
   minePositions: number[]
   payout: 0
+  newBalance?: number
 }
 
-export type PickTileResponse = PickTileSafeResponse | PickTileMineResponse
+export type PickTileResponse = PickTileSafeResponse | PickTileFullClearResponse | PickTileMineResponse
 
 // POST /api/game/cashout
 export interface CashoutRequest {
@@ -44,4 +61,5 @@ export interface CashoutResponse {
   finalMultiplier: number
   serverSeed: string
   minePositions: number[]
+  newBalance?: number
 }

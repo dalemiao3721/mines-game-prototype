@@ -54,7 +54,7 @@ function simulateOneGame(mineCount: number, targetOpen: number, rtp: number): nu
   const deck = Array.from({ length: TOTAL_TILES }, (_, i) => i < mineCount ? 1 : 0)
   for (let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[deck[i], deck[j]] = [deck[j], deck[i]]
+    ;[deck[i], deck[j]] = [deck[j], deck[i]] as [0 | 1, 0 | 1]
   }
   for (let i = 0; i < targetOpen; i++) {
     if (deck[i] === 1) return 0

@@ -4,6 +4,14 @@
 根據 proposal.md 與 UI mockups，建立一個類 Stake Mines 風格的踩地雷機率遊戲。
 採用 Monorepo 架構，前端 Vite+React+TS，後端 Node.js+Express+TS，PostgreSQL 資料庫。
 
+### 整合規格
+本遊戲作為 `game-lobby` Monorepo 中的 App 模組（`apps/mines-game/`），透過大廳統一閘道提供服務：
+- **前端 Base URL**：`/mine-game/`（透過 Port 3001 閘道代理）
+- **行動端 Mobile Route**：`/mine-game/m/`（強制載入 Mobile Pro UI）
+- **後端 API**：透過 Port 3002 閘道代理至 `/mine-game/` 路徑
+- **PWA**：支援 Manifest 定義與 Service Worker 緩存，透過 `vite-plugin-pwa` 生成
+- **錢包整合**：統一透過大廳提供的 API Client 進行餘額操作
+
 ---
 
 ## 技術選型
@@ -24,8 +32,8 @@
 ## Monorepo 目錄結構
 
 ```
-mines-game/
-├── package.json                    # Root workspace
+game-lobby/apps/mines-game/         # 作為 game-lobby Monorepo 的子模組
+├── package.json                    # Workspace 設定
 ├── pnpm-workspace.yaml
 ├── tsconfig.base.json              # 共用 TS 設定
 ├── .env.example
@@ -72,7 +80,7 @@ mines-game/
 │   └── frontend/
 │       ├── package.json
 │       ├── tsconfig.json
-│       ├── vite.config.ts
+│       ├── vite.config.ts              # base: '/mine-game/'
 │       ├── tailwind.config.ts
 │       ├── index.html
 │       └── src/
@@ -84,16 +92,16 @@ mines-game/
 │           │   │   ├── Tile.tsx             # 單格: unrevealed/safe/mine
 │           │   │   └── TileGrid.tsx         # 25 個 Tile 排列
 │           │   ├── Controls/
-│           │   │   ├── BetInput.tsx         # 下注金額輸入
+│           │   │   ├── BetInput.tsx         # 下注金額輸入（加減按鈕步進值 10，初始值 $100）
 │           │   │   ├── MineSelector.tsx     # 1-24 地雷數選擇器
 │           │   │   ├── RTPSelector.tsx      # 94/96/97/98/99% 選擇
-│           │   │   └── ActionButton.tsx     # Start / Cashout 按鈕
+│           │   │   └── ActionButton.tsx     # Start / Cashout / PLAY AGAIN 按鈕
 │           │   ├── Display/
 │           │   │   ├── MultiplierDisplay.tsx  # 當前倍率大字顯示
 │           │   │   ├── PayoutDisplay.tsx      # 可兌現金額
-│           │   │   └── GameResultOverlay.tsx  # 勝/敗結算覆蓋層
+│           │   │   └── GameResultOverlay.tsx  # 勝/敗結算覆蓋層（炸彈顯示 "$0.00" payout + "-$betAmount lost"）
 │           │   └── FairVerifier/
-│           │       └── SeedVerifier.tsx     # Provably Fair 驗算工具
+│           │       └── SeedVerifier.tsx     # Provably Fair 驗算工具（已在前端隱藏，同 RTP Selector 處理方式）
 │           ├── hooks/
 │           │   ├── useGameState.ts          # 遊戲狀態機
 │           │   └── useGameAPI.ts            # API 呼叫封裝
@@ -125,6 +133,9 @@ model BetRecord {
   updatedAt         DateTime    @updatedAt @map("updated_at")
   settlement        Settlement?
   drawLog           DrawLog?
+
+  @@index([playerId, status])
+  @@index([playerId, createdAt])
 }
 
 model Settlement {
@@ -163,7 +174,7 @@ enum Outcome   { WIN LOSE }
 ### POST /api/game/start
 ```
 Request:  { betAmount: number, mineCount: number, rtp: 94|96|97|98|99 }
-Response: { sessionId, serverSeedHash, multiplier: 1.00 }
+Response: { sessionId, serverSeedHash, multiplier: 1.00, nextMultiplier: number }
 ```
 **後端處理流程：**
 1. 生成 `serverSeed` = `crypto.randomBytes(32).toString('hex')`
@@ -175,7 +186,7 @@ Response: { sessionId, serverSeedHash, multiplier: 1.00 }
 ### POST /api/game/pick
 ```
 Request:  { sessionId, tileIndex: 0-24 }
-Response (安全): { result: "safe", newMultiplier, pickedTiles }
+Response (安全): { result: "safe", newMultiplier, nextMultiplier, pickedTiles }
 Response (地雷): { result: "mine", serverSeed, minePositions, payout: 0 }
 ```
 **後端處理流程：**
@@ -288,7 +299,7 @@ interface GameState {
   serverSeedHash: string | null
   serverSeed: string | null   // 遊戲結束後公開
   minePositions: number[]     // 遊戲結束後公開
-  betAmount: number
+  betAmount: number           // 初始值 $100，步進值 10
   mineCount: number
   rtp: 94 | 96 | 97 | 98 | 99
 }
@@ -337,14 +348,44 @@ type TileState = 'unrevealed' | 'safe' | 'mine'
 
 ---
 
+## 整合架構
+
+### 大廳整合模式
+Mines Game 作為 `game-lobby` Monorepo 的子模組，透過統一閘道運作：
+
+```
+                  Unified Gateway
+                  ┌────────────────────┐
+Browser ──────►   │ Port 3001 (前端)    │ ──► /mine-game/ ──► Mines 前端 (內部 5173)
+                  │ Port 3002 (API)    │ ──► /mine-game/ ──► Mines 後端 (內部 4001)
+                  └────────────────────┘
+                           │
+                           ▼ (結算)
+                  大廳後端 Wallet API
+                  POST /lobby/api/game/settle
+```
+
+### 錢包 API 串接
+遊戲結算時，透過大廳 API Client 進行餘額操作：
+- `GET /lobby/api/game/balance` — 取得玩家即時餘額
+- `POST /lobby/api/game/settle` — 結算下注與獎金
+- `POST /lobby/api/game/close-session` — 關閉遊戲 Session
+
+---
+
 ## 環境設定
 
 ```env
 # .env.example
-DATABASE_URL="postgresql://user:password@localhost:5432/mines_game"
-PORT=3001
+DATABASE_URL="postgresql://user:password@localhost:5432/mines_game"  # 使用獨立的 mines_game 資料庫
+PORT=4001
 NODE_ENV=development
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=http://localhost:3001
+BASE_URL=/mine-game/
+
+# 大廳整合
+LOBBY_API_URL=http://localhost:3002/lobby
+GAME_SECRET=mines-shared-secret
 ```
 
 ---
@@ -352,7 +393,7 @@ CORS_ORIGIN=http://localhost:5173
 ## 開發腳本
 
 ```json
-// Root package.json
+// mines-game/package.json
 {
   "scripts": {
     "dev":   "pnpm --parallel -r dev",
@@ -361,6 +402,9 @@ CORS_ORIGIN=http://localhost:5173
   }
 }
 ```
+
+> **備註**：開發模式下，Mines 前端在 `localhost:5173`、後端在 `localhost:4001` 運行。
+> 透過 game-lobby 的 Unified Gateway（Port 3001/3002）統一對外提供 `/mine-game/` 路由。
 
 ---
 
@@ -372,7 +416,7 @@ CORS_ORIGIN=http://localhost:5173
 | 2 | 後端 Prisma schema + DB migration + Provably Fair service | DB 建立 + 種子驗算通過 |
 | 3 | API 端點實作 (start/pick/cashout) + 整合測試 | API 可正常呼叫 |
 | 4 | 前端遊戲 UI + TailwindCSS Glassmorphism 風格 | 完整 UI 可互動 |
-| 5 | 前後端串接 + E2E 測試 + RTP 模擬驗證 | RTP 誤差 < 0.5% |
+| 5 | 前後端串接 + E2E 測試 + RTP 模擬驗證 | RTP 誤差 < 1.0% |
 
 ---
 
@@ -388,4 +432,30 @@ CORS_ORIGIN=http://localhost:5173
 
 ---
 
-*文件版本：v1.0 | 日期：2026-03-12*
+## v1.3 更新紀錄 (2026-03-16)
+
+### 前端修正
+1. **BetInput 步進值**：加減按鈕步進值改為 10，初始下注金額 $100。
+2. **Provably Fair (SeedVerifier)**：前端已隱藏，與 RTP Selector 採用相同處理方式（後端仍完整支援）。
+3. **手機版佈局**：上下堆疊（遊戲板在上、控制面板在下），`@media (max-width: 768px)` 響應式切換。
+4. **手機版 TileGrid**：移除 `aspect-square`，使用 `calc(100dvh - 440px)` 限制高度。
+5. **手機版間距壓縮**：gap: 0, padding: 0 6px, control-card padding: 5px 10px。
+6. **`.app__main` 手機版**：`flex: none` 消除空白。
+7. **GameResultOverlay**：炸彈顯示 "$0.00" payout + "-$betAmount lost"。
+8. **ActionButton**：遊戲結束後顯示 "PLAY AGAIN"。
+
+### 後端修正
+1. **DATABASE_URL**：使用獨立 `mines_game` 資料庫（`postgresql://user:password@localhost:5432/mines_game`）。
+
+### PWA 通用修正
+1. Viewport meta：`width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover`。
+2. 全域 CSS：`100vh` → `100dvh`，`-webkit-text-size-adjust: 100%`。
+3. 手機版響應式斷點：`@media (max-width: 768px)`。
+
+### Mockup 截圖
+- 桌面版：`apps/mines-game/docs/mockups/desktop/mines_idle.png`
+- 手機版：`apps/mines-game/docs/mockups/mobile/mines_idle_mobile.png`
+
+---
+
+*文件版本：v1.3 | 日期：2026-03-16*

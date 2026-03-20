@@ -18,4 +18,6 @@ export interface GameSession {
   pickedTiles: number[]
   currentMultiplier: number
   status: GameStatus
+  lobbySessionId?: string
+  lobbyToken?: string
 }
