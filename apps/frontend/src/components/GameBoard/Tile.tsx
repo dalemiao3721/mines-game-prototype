@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import type { TileState } from '../../types'
-import { audioManager } from '../../utils/audio'
 
 interface TileProps {
   index: number
@@ -17,14 +16,6 @@ export function Tile({ index, state, disabled, onClick, currentMultiplier }: Til
   useEffect(() => {
     if (state !== prevState && state !== 'unrevealed') {
       setAnimating(true)
-      
-      // Play sound based on new state
-      if (state === 'safe') {
-        audioManager.play('diamond')
-      } else if (state === 'mine') {
-        audioManager.play('explosion')
-      }
-
       const timer = setTimeout(() => setAnimating(false), 800)
       setPrevState(state)
       return () => clearTimeout(timer)

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { gameApi } from '../api/gameApi'
+import { audioManager } from '../utils/audio'
 import type { GameState } from './useGameState'
 
 interface GameActions {
@@ -33,6 +34,8 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
         req.lobbySessionId = lobby.lobbySessionId
       }
       const res = await gameApi.start(req)
+      // Trigger Start Sound
+      audioManager.play('start')
       actions.gameStarted(res.sessionId, res.serverSeedHash, res.nextMultiplier)
       if (res.lobbyBalance != null && lobby?.onBalanceUpdate) {
         lobby.onBalanceUpdate(res.lobbyBalance)
@@ -51,15 +54,22 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     try {
       const res = await gameApi.pick({ sessionId: state.sessionId, tileIndex })
       if (res.result === 'safe') {
+        // Trigger Diamond Sound for individual hit
+        audioManager.play('diamond')
         const nextMult = 'nextMultiplier' in res ? res.nextMultiplier : 0
         actions.tileSafe(tileIndex, res.newMultiplier, nextMult)
         if ('fullClear' in res && res.fullClear) {
+          audioManager.play('cashout')
           actions.cashout(res.serverSeed, res.minePositions, res.payout, res.newMultiplier)
           if ('newBalance' in res && res.newBalance != null && lobby?.onBalanceUpdate) {
             lobby.onBalanceUpdate(res.newBalance)
           }
         }
       } else {
+        // Trigger Bomb then Explosion Sound
+        audioManager.play('bomb')
+        setTimeout(() => audioManager.play('explosion'), 150)
+        
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
         if (res.newBalance != null && lobby?.onBalanceUpdate) {
           lobby.onBalanceUpdate(res.newBalance)
@@ -78,6 +88,8 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     setError(null)
     try {
       const res = await gameApi.cashout({ sessionId: state.sessionId })
+      // Trigger Cashout Sound
+      audioManager.play('cashout')
       actions.cashout(res.serverSeed, res.minePositions, res.payout, res.finalMultiplier)
       if (res.newBalance != null && lobby?.onBalanceUpdate) {
         lobby.onBalanceUpdate(res.newBalance)

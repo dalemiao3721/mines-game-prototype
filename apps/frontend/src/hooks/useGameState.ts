@@ -79,9 +79,13 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'TILE_MINE': {
       const tiles = [...state.tiles]
-      tiles[action.tileIndex] = 'mine'
-      for (const pos of action.minePositions) {
-        if (tiles[pos] === 'unrevealed') tiles[pos] = 'mine'
+      // Reveal all tiles: mine positions as 'mine', others as 'safe'
+      for (let i = 0; i < tiles.length; i++) {
+        if (action.minePositions.includes(i)) {
+          tiles[i] = 'mine'
+        } else if (tiles[i] === 'unrevealed') {
+          tiles[i] = 'safe'
+        }
       }
       return {
         ...state,
@@ -94,16 +98,27 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
 
-    case 'CASHOUT':
+    case 'CASHOUT': {
+      const tiles = [...state.tiles]
+      // Reveal everything on cashout
+      for (let i = 0; i < tiles.length; i++) {
+        if (action.minePositions.includes(i)) {
+          tiles[i] = 'mine'
+        } else if (tiles[i] === 'unrevealed') {
+          tiles[i] = 'safe'
+        }
+      }
       return {
         ...state,
         status: 'win',
+        tiles, // Add revealed tiles here
         serverSeed: action.serverSeed,
         minePositions: action.minePositions,
         currentMultiplier: action.finalMultiplier,
         potentialPayout: action.payout,
         nextMultiplier: 0,
       }
+    }
 
     case 'RESET':
       return {
