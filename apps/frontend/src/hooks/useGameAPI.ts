@@ -21,7 +21,7 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
   const [error, setError] = useState<string | null>(null)
 
   const startGame = useCallback(async () => {
-    // Play Start Sound IMMEDIATELY for responsiveness
+    // Play Crisp Start Click immediately
     audioManager.play('start')
     
     setLoading(true)
@@ -55,7 +55,6 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     try {
       const res = await gameApi.pick({ sessionId: state.sessionId, tileIndex })
       if (res.result === 'safe') {
-        // Trigger Diamond Sound with a small random pitch-like feel by cloning
         audioManager.play('diamond')
         const nextMult = 'nextMultiplier' in res ? res.nextMultiplier : 0
         actions.tileSafe(tileIndex, res.newMultiplier, nextMult)
@@ -68,13 +67,15 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
           }
         }
       } else {
-        // Trigger cinematic Double-Boom sequence: 
-        // 1. Initial Blast (Bump) - Should be heavy as requested
+        // Redesigned Cinematic Sequence:
+        // 1. Sharp "Bump" (Mechanical Click) - The point of failure
         audioManager.play('bump')
-        // 2. Rising Suspense (Bomb Fuse) - Faster to keep energy up
-        setTimeout(() => audioManager.play('bomb'), 1000)
-        // 3. Final Massive Shockwave (Explosion) - More distinct gap
-        setTimeout(() => audioManager.play('explosion'), 1600)
+        
+        // 2. Suspenseful Gap (1.2s then Massive Shockwave)
+        // Per user: "Bump 的聲音清脆點約 1-2 秒", "再接現在音效(爆炸)"
+        setTimeout(() => {
+          audioManager.play('explosion')
+        }, 1200)
         
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
         if (res.newBalance != null && lobby?.onBalanceUpdate) {
@@ -94,7 +95,6 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     setError(null)
     try {
       const res = await gameApi.cashout({ sessionId: state.sessionId })
-      // Trigger Rich Cashout Sequence
       audioManager.play('cashout')
       audioManager.play('cashRegister')
       actions.cashout(res.serverSeed, res.minePositions, res.payout, res.finalMultiplier)
