@@ -21,6 +21,9 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
   const [error, setError] = useState<string | null>(null)
 
   const startGame = useCallback(async () => {
+    // Play Start Sound IMMEDIATELY for responsiveness
+    audioManager.play('start')
+    
     setLoading(true)
     setError(null)
     try {
@@ -34,8 +37,6 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
         req.lobbySessionId = lobby.lobbySessionId
       }
       const res = await gameApi.start(req)
-      // Trigger Start Sound
-      audioManager.play('start')
       actions.gameStarted(res.sessionId, res.serverSeedHash, res.nextMultiplier)
       if (res.lobbyBalance != null && lobby?.onBalanceUpdate) {
         lobby.onBalanceUpdate(res.lobbyBalance)
@@ -54,7 +55,7 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     try {
       const res = await gameApi.pick({ sessionId: state.sessionId, tileIndex })
       if (res.result === 'safe') {
-        // Trigger Diamond Sound for individual hit
+        // Trigger Diamond Sound with a small random pitch-like feel by cloning
         audioManager.play('diamond')
         const nextMult = 'nextMultiplier' in res ? res.nextMultiplier : 0
         actions.tileSafe(tileIndex, res.newMultiplier, nextMult)
@@ -68,12 +69,12 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
         }
       } else {
         // Trigger cinematic Double-Boom sequence: 
-        // 1. Initial Blast (Bump)
+        // 1. Initial Blast (Bump) - Should be heavy as requested
         audioManager.play('bump')
-        // 2. Rising Suspense (Bomb Fuse)
-        setTimeout(() => audioManager.play('bomb'), 1200)
-        // 3. Final Massive Shockwave (Explosion)
-        setTimeout(() => audioManager.play('explosion'), 2000)
+        // 2. Rising Suspense (Bomb Fuse) - Faster to keep energy up
+        setTimeout(() => audioManager.play('bomb'), 1000)
+        // 3. Final Massive Shockwave (Explosion) - More distinct gap
+        setTimeout(() => audioManager.play('explosion'), 1600)
         
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
         if (res.newBalance != null && lobby?.onBalanceUpdate) {
