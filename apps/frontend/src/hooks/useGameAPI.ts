@@ -21,8 +21,8 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
   const [error, setError] = useState<string | null>(null)
 
   const startGame = useCallback(async () => {
-    // Play Crisp Start Click immediately
-    audioManager.play('start')
+    // Play High-Volume Pro Start Click
+    audioManager.play('start', 2.0)
     
     setLoading(true)
     setError(null)
@@ -55,26 +55,27 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     try {
       const res = await gameApi.pick({ sessionId: state.sessionId, tileIndex })
       if (res.result === 'safe') {
-        audioManager.play('diamond')
+        audioManager.play('diamond', 1.5)
         const nextMult = 'nextMultiplier' in res ? res.nextMultiplier : 0
         actions.tileSafe(tileIndex, res.newMultiplier, nextMult)
         if ('fullClear' in res && res.fullClear) {
-          audioManager.play('cashout')
-          audioManager.play('cashRegister')
+          audioManager.play('cashout', 2.0)
+          audioManager.play('cashRegister', 2.0)
           actions.cashout(res.serverSeed, res.minePositions, res.payout, res.newMultiplier)
           if ('newBalance' in res && res.newBalance != null && lobby?.onBalanceUpdate) {
             lobby.onBalanceUpdate(res.newBalance)
           }
         }
       } else {
-        // Redesigned Cinematic Sequence:
-        // 1. Sharp "Bump" (Mechanical Click) - The point of failure
-        audioManager.play('bump')
+        // Multi-Layered Cinematic Explosion Sequence:
+        // 1. Sharp Trigger (Bump) - High Gain for clarity
+        audioManager.play('bump', 2.5)
         
-        // 2. Suspenseful Gap (1.2s then Massive Shockwave)
-        // Per user: "Bump 的聲音清脆點約 1-2 秒", "再接現在音效(爆炸)"
+        // 2. The Final Payoff (Layered Blast) after 1.2s suspense
         setTimeout(() => {
-          audioManager.play('explosion')
+          // Play both Bloom and Shockwave layers simultaneously for depth
+          audioManager.play('explosion', 3.0)
+          audioManager.play('shockwave', 2.0)
         }, 1200)
         
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
@@ -95,8 +96,8 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
     setError(null)
     try {
       const res = await gameApi.cashout({ sessionId: state.sessionId })
-      audioManager.play('cashout')
-      audioManager.play('cashRegister')
+      audioManager.play('cashout', 2.5)
+      audioManager.play('cashRegister', 2.0)
       actions.cashout(res.serverSeed, res.minePositions, res.payout, res.finalMultiplier)
       if (res.newBalance != null && lobby?.onBalanceUpdate) {
         lobby.onBalanceUpdate(res.newBalance)

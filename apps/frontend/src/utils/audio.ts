@@ -1,36 +1,75 @@
 const SOUND_URLS = {
   diamond: 'https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3',
-  explosion: 'https://assets.mixkit.co/active_storage/sfx/2792/2792-preview.mp3', // Massive Cinematic Explosion with Debris
-  bump: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3', // Crisp Mechanical Click/Trigger
-  click: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3', // Minimal Digital Click
-  start: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3', // Same short digital click for startup
-  cashout: 'https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3', // Rich victory bell
-  cashRegister: 'https://assets.mixkit.co/active_storage/sfx/1113/1113-preview.mp3', // Cha-ching
+  explosion: 'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3', // Heavy Bloom
+  shockwave: 'https://assets.mixkit.co/active_storage/sfx/2557/2557-preview.mp3', // Intense Shockwave Layer
+  bump: 'https://assets.mixkit.co/active_storage/sfx/2558/2558-preview.mp3', // Metallic Trigger
+  click: 'https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3', // Short Pro Beep
+  start: 'https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3',
+  cashout: 'https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3',
+  cashRegister: 'https://assets.mixkit.co/active_storage/sfx/1113/1113-preview.mp3',
 }
 
-class AudioManager {
-  private sounds: Map<string, HTMLAudioElement> = new Map()
+class WebAudioManager {
+  private context: AudioContext | null = null;
+  private buffers: Map<string, AudioBuffer> = new Map();
+  private pcmData: Map<string, ArrayBuffer> = new Map();
 
   constructor() {
     if (typeof window !== 'undefined') {
-      Object.entries(SOUND_URLS).forEach(([key, url]) => {
-        const audio = new Audio(url)
-        audio.preload = 'auto'
-        audio.load()
-        this.sounds.set(key, audio)
-      })
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        this.context = new AudioCtx();
+        this.preload();
+      } catch (e) {
+        console.error('[AudioManager] AudioContext failed:', e);
+      }
     }
   }
 
-  public play(type: keyof typeof SOUND_URLS) {
-    const audio = this.sounds.get(type)
-    if (audio) {
-      // Use clone for overlapping if needed, but for UI clicks, we want crisp one-shot
-      const sound = audio.cloneNode(true) as HTMLAudioElement
-      sound.volume = 0.8
-      sound.play().catch(err => console.warn('Audio play failed:', err))
+  private async preload() {
+    if (!this.context) return;
+    
+    Object.entries(SOUND_URLS).forEach(async ([key, url]) => {
+      try {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        this.pcmData.set(key, arrayBuffer);
+        const decoded = await this.context!.decodeAudioData(arrayBuffer.slice(0));
+        this.buffers.set(key, decoded);
+      } catch (err) {
+        console.warn(`[AudioManager] Preload failed for ${key}:`, err);
+      }
+    });
+  }
+
+  public async play(type: keyof typeof SOUND_URLS, volume: number = 2.0) {
+    if (!this.context) return;
+
+    if (this.context.state === 'suspended') {
+      await this.context.resume();
+    }
+
+    let buffer = this.buffers.get(type);
+    if (!buffer && this.pcmData.has(type)) {
+      try {
+        buffer = await this.context.decodeAudioData(this.pcmData.get(type)!.slice(0));
+        this.buffers.set(type, buffer);
+      } catch (e) {}
+    }
+
+    if (buffer) {
+      const source = this.context.createBufferSource();
+      const gainNode = this.context.createGain();
+      
+      source.buffer = buffer;
+      gainNode.gain.value = volume;
+      
+      source.connect(gainNode);
+      gainNode.connect(this.context.destination);
+      
+      source.start(0);
     }
   }
 }
 
-export const audioManager = new AudioManager()
+export const audioManager = new WebAudioManager();
