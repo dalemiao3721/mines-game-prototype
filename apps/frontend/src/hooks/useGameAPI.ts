@@ -66,9 +66,10 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
           }
         }
       } else {
-        // Trigger Bomb then Explosion Sound
-        audioManager.play('bomb')
-        setTimeout(() => audioManager.play('explosion'), 150)
+        // Trigger bump -> bomb -> explosion with delays
+        audioManager.play('bump')
+        setTimeout(() => audioManager.play('bomb'), 100)
+        setTimeout(() => audioManager.play('explosion'), 400)
         
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
         if (res.newBalance != null && lobby?.onBalanceUpdate) {

@@ -24,6 +24,7 @@ type GameAction =
   | { type: 'TILE_SAFE'; tileIndex: number; newMultiplier: number; nextMultiplier: number }
   | { type: 'TILE_MINE'; tileIndex: number; serverSeed: string; minePositions: number[] }
   | { type: 'CASHOUT'; serverSeed: string; minePositions: number[]; payout: number; finalMultiplier: number }
+  | { type: 'DISMISS_RESULT' }
   | { type: 'RESET' }
 
 const initialState: GameState = {
@@ -120,6 +121,12 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       }
     }
 
+    case 'DISMISS_RESULT':
+      return {
+        ...state,
+        status: 'idle',
+      }
+
     case 'RESET':
       return {
         ...initialState,
@@ -147,6 +154,7 @@ export function useGameState() {
     dispatch({ type: 'TILE_MINE', tileIndex, serverSeed, minePositions }), [])
   const cashout = useCallback((serverSeed: string, minePositions: number[], payout: number, finalMultiplier: number) =>
     dispatch({ type: 'CASHOUT', serverSeed, minePositions, payout, finalMultiplier }), [])
+  const dismissResult = useCallback(() => dispatch({ type: 'DISMISS_RESULT' }), [])
   const reset = useCallback(() => dispatch({ type: 'RESET' }), [])
 
   return {
@@ -158,6 +166,7 @@ export function useGameState() {
     tileSafe,
     tileMine,
     cashout,
+    dismissResult,
     reset,
   }
 }

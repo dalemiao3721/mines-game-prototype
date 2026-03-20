@@ -63,6 +63,7 @@ export default function App() {
     tileSafe,
     tileMine,
     cashout,
+    dismissResult,
     reset,
   } = useGameState()
 
@@ -141,7 +142,7 @@ export default function App() {
               potentialPayout={state.potentialPayout}
               onStart={startGame}
               onCashout={doCashout}
-              onReset={reset}
+              onReset={dismissResult}
             />
             {isActive && (
               <div className="text-left bg-[var(--color-bg-secondary)] border border-[rgba(245,185,61,0.3)] rounded-[10px] sm:rounded-[16px] py-1.5 sm:py-3 px-3 sm:px-4 shadow-[0_0_20px_rgba(245,185,61,0.15)] relative overflow-hidden">
@@ -193,7 +194,7 @@ export default function App() {
                 payout={state.potentialPayout}
                 multiplier={state.currentMultiplier}
                 betAmount={state.betAmount}
-                onReset={reset}
+                onReset={dismissResult}
               />
             </div>
           </div>
