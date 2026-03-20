@@ -5,6 +5,7 @@ export interface GameState {
   status: GameStatus
   tiles: TileState[]
   currentMultiplier: number
+  nextMultiplier: number
   potentialPayout: number
   sessionId: string | null
   serverSeedHash: string | null
@@ -19,8 +20,8 @@ type GameAction =
   | { type: 'SET_BET'; betAmount: number }
   | { type: 'SET_MINES'; mineCount: number }
   | { type: 'SET_RTP'; rtp: RTPSetting }
-  | { type: 'GAME_STARTED'; sessionId: string; serverSeedHash: string }
-  | { type: 'TILE_SAFE'; tileIndex: number; newMultiplier: number }
+  | { type: 'GAME_STARTED'; sessionId: string; serverSeedHash: string; nextMultiplier: number }
+  | { type: 'TILE_SAFE'; tileIndex: number; newMultiplier: number; nextMultiplier: number }
   | { type: 'TILE_MINE'; tileIndex: number; serverSeed: string; minePositions: number[] }
   | { type: 'CASHOUT'; serverSeed: string; minePositions: number[]; payout: number; finalMultiplier: number }
   | { type: 'RESET' }
@@ -29,6 +30,7 @@ const initialState: GameState = {
   status: 'idle',
   tiles: Array(25).fill('unrevealed'),
   currentMultiplier: 1.0,
+  nextMultiplier: 0,
   potentialPayout: 0,
   sessionId: null,
   serverSeedHash: null,
@@ -54,6 +56,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         status: 'active',
         tiles: Array(25).fill('unrevealed'),
         currentMultiplier: 1.0,
+        nextMultiplier: action.nextMultiplier,
         potentialPayout: state.betAmount,
         sessionId: action.sessionId,
         serverSeedHash: action.serverSeedHash,
@@ -69,6 +72,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         tiles,
         currentMultiplier: action.newMultiplier,
+        nextMultiplier: action.nextMultiplier,
         potentialPayout,
       }
     }
@@ -76,7 +80,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case 'TILE_MINE': {
       const tiles = [...state.tiles]
       tiles[action.tileIndex] = 'mine'
-      // Reveal all mine positions
       for (const pos of action.minePositions) {
         if (tiles[pos] === 'unrevealed') tiles[pos] = 'mine'
       }
@@ -87,6 +90,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         serverSeed: action.serverSeed,
         minePositions: action.minePositions,
         potentialPayout: 0,
+        nextMultiplier: 0,
       }
     }
 
@@ -98,6 +102,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         minePositions: action.minePositions,
         currentMultiplier: action.finalMultiplier,
         potentialPayout: action.payout,
+        nextMultiplier: 0,
       }
 
     case 'RESET':
@@ -119,10 +124,10 @@ export function useGameState() {
   const setBet = useCallback((betAmount: number) => dispatch({ type: 'SET_BET', betAmount }), [])
   const setMines = useCallback((mineCount: number) => dispatch({ type: 'SET_MINES', mineCount }), [])
   const setRTP = useCallback((rtp: RTPSetting) => dispatch({ type: 'SET_RTP', rtp }), [])
-  const gameStarted = useCallback((sessionId: string, serverSeedHash: string) =>
-    dispatch({ type: 'GAME_STARTED', sessionId, serverSeedHash }), [])
-  const tileSafe = useCallback((tileIndex: number, newMultiplier: number) =>
-    dispatch({ type: 'TILE_SAFE', tileIndex, newMultiplier }), [])
+  const gameStarted = useCallback((sessionId: string, serverSeedHash: string, nextMultiplier: number) =>
+    dispatch({ type: 'GAME_STARTED', sessionId, serverSeedHash, nextMultiplier }), [])
+  const tileSafe = useCallback((tileIndex: number, newMultiplier: number, nextMultiplier: number) =>
+    dispatch({ type: 'TILE_SAFE', tileIndex, newMultiplier, nextMultiplier }), [])
   const tileMine = useCallback((tileIndex: number, serverSeed: string, minePositions: number[]) =>
     dispatch({ type: 'TILE_MINE', tileIndex, serverSeed, minePositions }), [])
   const cashout = useCallback((serverSeed: string, minePositions: number[], payout: number, finalMultiplier: number) =>

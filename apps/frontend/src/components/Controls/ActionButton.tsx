@@ -21,9 +21,10 @@ export function ActionButton({
     return (
       <button
         onClick={onReset}
-        className="control-panel__action-btn control-panel__action-btn--start"
+        className="control-panel__action-btn control-panel__action-btn--start relative overflow-hidden group"
       >
-        START GAME
+        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+        <span className="relative z-10 drop-shadow-md">PLAY AGAIN</span>
       </button>
     )
   }
@@ -33,16 +34,19 @@ export function ActionButton({
       <button
         onClick={onCashout}
         disabled={loading}
-        className="control-panel__action-btn control-panel__action-btn--cashout"
+        className="control-panel__action-btn control-panel__action-btn--cashout animate-[glow-pulse_2s_infinite] relative overflow-hidden group"
       >
-        {loading ? (
-          <span className="inline-flex items-center gap-2 justify-center w-full">
-            <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-            CASHING OUT...
-          </span>
-        ) : (
-          `CASHOUT $${potentialPayout.toFixed(2)}`
-        )}
+        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+        <span className="relative z-10 drop-shadow-md">
+          {loading ? (
+            <span className="inline-flex items-center gap-2 justify-center w-full">
+              <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              CASHING OUT...
+            </span>
+          ) : (
+            `CASHOUT $${potentialPayout.toFixed(2)}`
+          )}
+        </span>
       </button>
     )
   }
@@ -51,16 +55,19 @@ export function ActionButton({
     <button
       onClick={onStart}
       disabled={loading}
-      className="control-panel__action-btn control-panel__action-btn--start"
+      className={`control-panel__action-btn control-panel__action-btn--start relative overflow-hidden group ${loading ? '' : 'animate-[glow-pulse_3s_infinite]'}`}
     >
-      {loading ? (
-        <span className="inline-flex items-center gap-2 justify-center w-full">
-          <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-          STARTING...
-        </span>
-      ) : (
-        'START GAME'
-      )}
+      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+      <span className="relative z-10 drop-shadow-md">
+        {loading ? (
+          <span className="inline-flex items-center gap-2 justify-center w-full">
+            <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+            STARTING...
+          </span>
+        ) : (
+          'START GAME'
+        )}
+      </span>
     </button>
   )
 }

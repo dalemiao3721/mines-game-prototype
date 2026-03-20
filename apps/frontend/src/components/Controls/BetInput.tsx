@@ -5,8 +5,8 @@ interface BetInputProps {
 }
 
 export function BetInput({ value, disabled, onChange }: BetInputProps) {
-  const handleDecrement = () => onChange(Math.max(1, value - 1))
-  const handleIncrement = () => onChange(value + 1)
+  const handleDecrement = () => onChange(Math.max(1, value - 10))
+  const handleIncrement = () => onChange(value + 10)
 
   return (
     <div className="control-panel__section">

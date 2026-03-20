@@ -11,6 +11,7 @@ export type {
   PickTileRequest,
   PickTileResponse,
   PickTileSafeResponse,
+  PickTileFullClearResponse,
   PickTileMineResponse,
   CashoutRequest,
   CashoutResponse,

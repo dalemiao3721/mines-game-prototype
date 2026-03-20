@@ -5,11 +5,12 @@ interface TileGridProps {
   tiles: TileState[]
   disabled: boolean
   onTileClick: (index: number) => void
+  currentMultiplier: number
 }
 
-export function TileGrid({ tiles, disabled, onTileClick }: TileGridProps) {
+export function TileGrid({ tiles, disabled, onTileClick, currentMultiplier }: TileGridProps) {
   return (
-    <div className="grid grid-cols-5 gap-2 sm:gap-3 w-full h-full min-h-[300px] max-w-[500px] aspect-square mx-auto content-center">
+    <div className="tile-grid grid grid-cols-5 gap-2 sm:gap-3 w-full max-w-[500px] sm:aspect-square mx-auto content-center">
       {tiles.map((state, index) => (
         <Tile
           key={index}
@@ -17,6 +18,7 @@ export function TileGrid({ tiles, disabled, onTileClick }: TileGridProps) {
           state={state}
           disabled={disabled}
           onClick={onTileClick}
+          currentMultiplier={currentMultiplier}
         />
       ))}
     </div>

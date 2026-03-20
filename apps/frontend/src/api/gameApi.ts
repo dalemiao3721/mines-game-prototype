@@ -7,7 +7,7 @@ import type {
   CashoutResponse,
 } from '../types'
 
-const BASE_URL = '/api/game'
+const BASE_URL = '/mines-api/game'
 
 async function request<T>(endpoint: string, body: unknown): Promise<T> {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
@@ -31,4 +31,16 @@ export const gameApi = {
 
   cashout: (data: CashoutRequest) =>
     request<CashoutResponse>('/cashout', data),
+
+  /** Fetch balance from the lobby API (frontend-direct call) */
+  getLobbyBalance: async (lobbyToken: string): Promise<{ balance: number; currency: string }> => {
+    const res = await fetch('/api/game/balance', {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${lobbyToken}` },
+    })
+    if (!res.ok) {
+      throw new Error(`Failed to get lobby balance: HTTP ${res.status}`)
+    }
+    return res.json()
+  },
 }

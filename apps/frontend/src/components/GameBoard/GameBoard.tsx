@@ -5,9 +5,10 @@ interface GameBoardProps {
   tiles: TileState[]
   disabled: boolean
   onTileClick: (index: number) => void
+  currentMultiplier: number
 }
 
-export function GameBoard({ tiles, disabled, onTileClick }: GameBoardProps) {
+export function GameBoard({ tiles, disabled, onTileClick, currentMultiplier }: GameBoardProps) {
   return (
     <div className="glass-card p-4 sm:p-6 relative overflow-hidden">
       {/* Background glow */}
@@ -16,7 +17,7 @@ export function GameBoard({ tiles, disabled, onTileClick }: GameBoardProps) {
       </div>
 
       <div className="relative z-10">
-        <TileGrid tiles={tiles} disabled={disabled} onTileClick={onTileClick} />
+        <TileGrid tiles={tiles} disabled={disabled} onTileClick={onTileClick} currentMultiplier={currentMultiplier} />
       </div>
     </div>
   )
