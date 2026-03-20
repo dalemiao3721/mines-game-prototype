@@ -238,6 +238,7 @@ button, input {
 .control-panel__bet-row {
   display: flex;
   align-items: center;
+  justify-content: center; /* Center buttons and input */
   gap: 8px;
 }
 
@@ -263,7 +264,7 @@ button, input {
 }
 
 .control-panel__bet-input-wrap {
-  flex: 1;
+  flex: 0 0 120px; /* Reduced width from flex: 1 */
   position: relative;
   display: flex;
   align-items: center;
