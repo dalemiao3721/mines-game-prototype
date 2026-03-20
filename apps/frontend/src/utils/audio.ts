@@ -1,6 +1,6 @@
 const SOUND_URLS = {
   diamond: 'https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3',
-  explosion: 'https://assets.mixkit.co/active_storage/sfx/2014/2014-preview.mp3',
+  explosion: 'https://assets.mixkit.co/active_storage/sfx/2567/2567-preview.mp3', // More realistic explo
   click: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3',
 }
 
