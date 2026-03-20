@@ -188,6 +188,7 @@ export default function App() {
                 disabled={tilesDisabled}
                 onTileClick={pickTile}
                 currentMultiplier={state.currentMultiplier}
+                guessedIndices={state.guessedIndices}
               />
               <GameResultOverlay
                 status={state.status}

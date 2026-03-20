@@ -14,6 +14,7 @@ export interface GameState {
   betAmount: number
   mineCount: number
   rtp: RTPSetting
+  guessedIndices: number[]
 }
 
 type GameAction =
@@ -40,6 +41,7 @@ const initialState: GameState = {
   betAmount: 100,
   mineCount: 5,
   rtp: 96,
+  guessedIndices: [],
 }
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -63,6 +65,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         serverSeedHash: action.serverSeedHash,
         serverSeed: null,
         minePositions: [],
+        guessedIndices: [],
       }
 
     case 'TILE_SAFE': {
@@ -72,6 +75,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         tiles,
+        guessedIndices: [...state.guessedIndices, action.tileIndex],
         currentMultiplier: action.newMultiplier,
         nextMultiplier: action.nextMultiplier,
         potentialPayout,
@@ -92,6 +96,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         status: 'lose',
         tiles,
+        guessedIndices: [...state.guessedIndices, action.tileIndex],
         serverSeed: action.serverSeed,
         minePositions: action.minePositions,
         potentialPayout: 0,
