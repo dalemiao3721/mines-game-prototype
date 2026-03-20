@@ -66,10 +66,10 @@ export function useGameAPI(state: GameState, actions: GameActions, lobby?: Lobby
           }
         }
       } else {
-        // Trigger bump -> bomb -> explosion with delays
+        // Trigger cinematic sequence: bump -> delay -> bomb -> explosion
         audioManager.play('bump')
-        setTimeout(() => audioManager.play('bomb'), 100)
-        setTimeout(() => audioManager.play('explosion'), 400)
+        setTimeout(() => audioManager.play('bomb'), 1200) // 1.2s suspense
+        setTimeout(() => audioManager.play('explosion'), 1800) // 0.6s after bomb
         
         actions.tileMine(tileIndex, res.serverSeed, res.minePositions)
         if (res.newBalance != null && lobby?.onBalanceUpdate) {
